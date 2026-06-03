@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سؤال مهم</title>
     <style>
-        /* تصميم الصفحة باللون الأبيض والأسود */
+        /* تصميم الصفحة باللون الأسود بالكامل والكلام بالأبيض */
         body {
-            background-color: #ffffff;
-            color: #000000;
+            background-color: #000000;
+            color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             height: 100vh;
@@ -16,11 +16,13 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            -webkit-tap-highlight-color: transparent; /* إخفاء وميض الضغط الأزرق في الموبايل */
         }
 
         .container {
             text-align: center;
             padding: 20px;
+            width: 100%;
         }
 
         h1 {
@@ -38,29 +40,24 @@
             align-items: center;
         }
 
-        /* تصميم الأزرار باللونين الأبيض والأسود */
+        /* تصميم الأزرار: خلفية بيضاء وكتابة سوداء */
         .btn {
-            background-color: #000000;
-            color: #ffffff;
-            border: 2px solid #000000;
+            background-color: #ffffff;
+            color: #000000;
+            border: 2px solid #ffffff;
             padding: 12px 35px;
             font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
             border-radius: 4px;
-            transition: background-color 0.2s, color 0.2s;
+            user-select: none;
         }
 
-        .btn:hover {
-            background-color: #ffffff;
-            color: #000000;
-        }
-
-        /* زر "لا" يحتاج إلى تمديد الحركة المطلقة */
+        /* زر "لا" يبدأ في مكان محدد بجانب زر أيوة */
         #no-btn {
             position: absolute;
             left: calc(50% + 10px);
-            transition: all 0.1s ease;
+            transition: transform 0.1s ease;
         }
 
         #yes-btn {
@@ -73,6 +70,7 @@
             display: none;
             font-size: 3rem;
             font-weight: 900;
+            text-align: center;
             animation: popUp 0.5s ease-out forwards;
         }
 
@@ -93,41 +91,39 @@
     </div>
 
     <div class="result" id="result-box">
-        جدعة 🖤
+        جدعة 🤍
     </div>
 
     <script>
         const noBtn = document.getElementById('no-btn');
-        const yesBtn = document.getElementById('yes-btn');
         const quizBox = document.getElementById('quiz-box');
         const resultBox = document.getElementById('result-box');
 
-        // دالة تحريك زر "لا" إلى مكان عشوائي في الشاشة
-        function moveNoButton() {
-            // حساب أبعاد الشاشة المتاحة للحركة مع ترك مسافة أمان
-            const padding = 50;
+        // دالة تحريك زر "لا" إلى مكان عشوائي تماماً عند الضغط
+        function moveNoButton(e) {
+            // منع السلوك الافتراضي للحدث لمنع أي تداخل على الموبايل
+            if(e) e.preventDefault();
+
+            // حساب أبعاد الشاشة المتاحة للحركة مع ترك مسافة أمان من الحواف
+            const padding = 60;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
-            // توليد إحداثيات عشوائية تماماً
+            // توليد إحداثيات عشوائية داخل حدود الشاشة
             const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
             const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
 
-            // تحويل طريقة العرض لتتحرك بحرية في كل الشاشة
+            // نقل الزر للمكان العشوائي الجديد
             noBtn.style.position = 'fixed';
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         }
 
-        // هروب الزر عند اقتراب الماوس (للكمبيوتر) وعند اللمس (للموبايل)
-        noBtn.addEventListener('mouseenter', moveNoButton);
-        noBtn.addEventListener('touchstart', function(e) {
-            e.preventDefault(); // منع النقرة الأصلية
-            moveNoButton();
-        });
+        /* تم قصر الحركة على حدث الضغط الفعلي فقط (Click و Touchstart) */
         noBtn.addEventListener('click', moveNoButton);
+        noBtn.addEventListener('touchstart', moveNoButton);
 
-        // دالة إظهار كلمة "جدعة" عند الضغط على أيوة
+        // دالة إظهار كلمة "جدعة" باللون الأبيض مع قلب أبيض أنيق
         function showSuccess() {
             quizBox.style.display = 'none';
             resultBox.style.display = 'block';
